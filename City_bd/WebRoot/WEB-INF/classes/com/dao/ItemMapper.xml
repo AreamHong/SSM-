@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ItemMapper">
+<select id="getItemList" resultType="ItemPojo">
+select *,sum(inventory) allInventory from item 
+left join shop_details shop
+on shop.shopid=item.id
+
+where item.name like #{name}
+<if test="shopid!=null">
+and item.shopid = #{shopid}
+</if>
+group by item.id
+order by item.name desc
+limit ${(index-1)*10},10
+</select>
+<select id="getStore" resultType="shopsPojo">
+select * from shops
+</select>
+<select id="getItemCount" resultType="int">
+select count(item.id) from item 
+where item.name like #{name}
+<if test="shopid!=null">
+and item.shopid = #{shopid}
+</if>
+</select>
+<delete id="del">
+	delete from item where id=#{id}
+</delete>
+<delete id="delAll">
+	delete from item where id in 
+	<foreach item="i" separator="," close=")" open="(" collection="list">${i} </foreach>
+</delete>
+<update id="isDisplay">
+	update item set isDelete = #{isDisplay} where id=#{id}
+</update>
+
+<select id="getItem" resultMap="Item">
+	select item.*,goods3.id goods3id,goods3.name goods3name,goods3.categoryCount goods3categoryCount,goods3.pid goods3pid
+	,goods3.category1 goodscategory1 
+	,goods3.category2 goodscategory2 
+	,goods3.category3 goodscategory3 
+	,goods3.category4 goodscategory4 
+	,goods3.category5 goodscategory5 
+	from item,goods3 where item.id = #{id} and item.pid = goods3.id
+</select>
+
+<resultMap id="Item" type="ItemPojo">
+  <id column="id" property="id" />
+  <result column="name" property="name"/>
+  <result column="price" property="price"/>
+  <result column="category1" property="category1"/>
+  <result column="category2" property="category2"/>
+  <result column="category3" property="category3"/>
+  <result column="category4" property="category4"/>
+  <result column="category5" property="category5"/>
+  <association property="goods3" javaType="Goods3Pojo">
+    <id column="goods3id" property="id"/>
+    <result  column="goods3name" property="name"/>
+    <result  column="goods3pid" property="pid"/>
+    <result  column="goods3categoryCount" property="categoryCount"/>
+    <result  column="goodscategory1" property="category1"/>
+    <result  column="goodscategory2" property="category2"/>
+    <result  column="goodscategory3" property="category3"/>
+    <result  column="goodscategory4" property="category4"/>
+    <result  column="goodscategory5" property="category5"/>
+  </association>
+</resultMap>
+<select id="getGoods2" resultType="Goods2Pojo">
+	select * from goods2 where id = #{pid}
+</select>
+<select id="getGoods1" resultType="Goods1Pojo">
+	select * from goods1 where id = #{pid}
+</select>
+
+</mapper>

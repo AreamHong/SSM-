@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.GoodsMapper">
+<select id="getGoods1" resultType="Goods1Pojo">
+		select * from goods1 
+</select>
+<select id="getGoods2" resultType="Goods2Pojo">
+		select * from goods2 where pid=#{pid} 
+</select>
+<select id="getGoods3" resultType="Goods3Pojo">
+		select * from goods3 where pid=#{pid}
+</select>
+
+<update id="isDisplay">
+	update goods#{goodsId} set isDelete = #{isDisplay} where id=#{id}
+</update>
+
+<delete id="del">
+	delete from goods#{goodsId} where id=#{id}
+</delete>
+
+<insert id="addGoods1">
+	insert into goods1(name,isDelete) values(#{name},#{isDelete})
+</insert>
+<insert id="addGoods2">
+	insert into goods2(name,isDelete,pid) values(#{name},#{isDelete},#{pid})
+</insert>
+<insert id="addGoods3" parameterType="Map">
+	insert into goods3(name,isDelete,pid,categoryCount${str1}) values('${goods3.name}',${goods3.isDelete},${goods3.pid},${goods3.categoryCount}${categoryCount}${str2})
+</insert>
+</mapper> 

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ordersMapper">
+
+	<!-- 订单：陈旭超  -->
+	<resultMap type="CityOrder" id="map">
+	
+		<result column="id" property="id"/>
+		<result column="data" property="data"/>
+		<result column="orderNumber" property="orderNumber"/>
+		<result column="quantity" property="quantity"/>
+		<result column="totalprice" property="totalprice"/>
+		<result column="typeid" property="typeid"/>
+		<result column="userid" property="userid"/>
+		<result column="storeid" property="storeid"/>
+		<result column="detailsid" property="detailsid"/>
+		<result column="address" property="address"/>
+		<result column="consignee" property="consignee"/>
+		<result column="phone" property="phone"/>
+		<result column="pay" property="pay"/>
+		<result column="distribution" property="distribution"/>
+		<result column="message" property="message"/>
+		<result column="shopname" property="storeName"/>
+		<result column="iname" property="shopName"/>
+		
+		
+		<association property="ordertype" javaType="CityOrdertype">
+			<result column="ttype" property="type"/>
+		</association>
+		<association property="details" javaType="shop_details">
+			<result column="iname" property="shopname"/>
+			<result column="mon" property="money"/>
+		</association>
+	</resultMap>
+	
+	<!-- 查询 -->
+	<select id="selList" resultMap="map">
+		SELECT o.*,t.`type` ttype,i.`shopname` iname,b.shopname 
+		FROM `city_order` o 
+		INNER JOIN `city_ordertype` t ON t.`id` = o.`typeid`
+		INNER JOIN `shop_details` i ON i.`id` = o.`detailsid`
+		INNER JOIN `shops` b ON b.`id` = o.`storeid`
+		<where>
+			<if test="sid!=0">
+				AND o.`storeid` = #{sid}
+			</if>
+			<if test="num!=null and num!=''">
+				AND o.`orderNumber` LIKE CONCAT('%',#{num},'%')
+			</if>
+			<if test="tid!=0">
+				AND o.`typeid` =#{tid}
+			</if>
+		</where>
+		ORDER BY o.id DESC
+		LIMIT #{index},#{size}
+	</select>
+	<select id="count" resultType="int">
+		select count(*) from `city_order` o 
+		<where>
+			<if test="sid!=0">
+				AND o.`storeid` = #{sid}
+			</if>
+			<if test="num!=null and num!=''">
+				AND o.`orderNumber` LIKE CONCAT('%',#{num},'%')
+			</if>
+			<if test="tid!=0">
+				AND o.`typeid` =#{tid}
+			</if>
+		</where>
+	</select>
+	<!-- 单个删除  -->
+	<delete id="del">
+		delete from city_order where id = #{id}
+	</delete>
+	<!-- 多个删除 -->
+	<delete id="delcontinuous">
+		delete from city_order where id in 
+		<foreach collection="list" open="(" close=")" separator="," item="i">
+			${i}
+		</foreach>
+	</delete>
+	
+	<!-- 查询所有类别  -->
+	<select id="seltype" resultType="CityOrdertype">
+		select * from city_ordertype
+	</select>
+	<!-- 根据城市id查询城市名称  -->
+	<select id="selreginId" resultType="String">
+		select name from city_region where id=#{id}
+	</select>
+	
+	<select id="selorderId" resultMap="map">
+		SELECT o.*,t.`type` ttype,i.`shopname` iname,i.money mon,s.contact sctt,s.province spce,
+		s.city sc,s.area sa,s.address sadd,s.phone pho
+		FROM `city_order` o
+		INNER JOIN `city_ordertype` t ON t.`id` = o.`typeid`
+		INNER JOIN `shop_details` i ON i.`id` = o.`detailsid`
+		INNER JOIN `city_shipping` s ON s.`id` = o.`shippingid`
+		where o.id = #{id}
+	</select>
+	
+	<update id="upd">
+		UPDATE `city_order` SET typeid = #{typeid} WHERE id=#{id}
+	</update>
+	
+	<update id="upds">
+		UPDATE `city_order` SET address = #{address},consignee=#{consignee},phone=#{phone},pay=#{pay},distribution=#{distribution},message=#{message} WHERE id=#{id}
+	</update>
+</mapper>

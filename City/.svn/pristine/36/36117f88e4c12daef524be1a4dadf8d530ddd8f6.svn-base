@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ordersMapper">
+	<select id="list" resultType="com.pojo.ordersPojo">
+		SELECT b.storename,c.shopname,c.attribute2,a.quantity,a.totalprice,c.inventory from `city_shopping`as a , city_store as b , shop_details as c 
+		where a.userid = #{userid} and a.type = 1 and a.storeid = b.id and a.detailsid = c.id
+	</select>
+	<select id="sum" resultType="int">
+		SELECT sum(totalprice) as sum from `city_shopping`as a , city_store as b , shop_details as c 
+		where a.userid = #{userid} and a.type = 1 and a.storeid = b.id and a.detailsid = c.id
+	</select>
+	<select id="address" resultType="com.pojo.shippingPojo">
+		SELECT b.id,b.addressdef,a.nickname,a.portrait,b.contact,b.address,b.phone,c.name as province ,d.name as area ,e.name as city from 
+		city_personal as a , city_shipping as b ,city_region as c,city_region as d ,city_region as e
+		where a.id = #{id} and b.pid = a.id and b.addressdef = 1 and c.id = b.province and d.id = b.area and e.id = b.city
+	</select>
+</mapper>

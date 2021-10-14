@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.countMapper">
+
+	<!-- 起始页统计信息:陈旭超  -->
+	
+	<!-- 统计订单 -->
+	<select id="countOrder" resultType="int">
+		select count(*) from `city_order`
+		<where>
+			<if test="typeid!=0">
+				and typeid = #{typeid}
+			</if>
+			<if test="shopsid!=0">
+				and shopsid = #{shopsid}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 店铺统计信息  -->
+	<!-- 店铺数量 -->
+	<select id="countShops" resultType="int">
+		select count(*) from `shops`
+	</select>
+	<!-- 商品数量  -->
+	<select id="countItem" resultType="int">
+		select count(*) from `item` 
+		<if test="shopid != 0">
+			where shopId = #{shopid}
+		</if>
+	</select>
+	<!-- 统计金额 -->
+	<select id="countPrice" resultType="double">
+		select SUM(totalprice) from `city_order` where typeid not in (1,5) 
+		<if test="shopsid != 0">
+			and shopsid = #{shopsid}
+		</if>
+	</select>
+	<!-- 广告统计信息  -->
+	<select id="countPoster" resultType="int">
+		select count(*) from city_poster
+		<if test="store != 0">
+			where `store` = #{store}
+		</if>
+	</select>
+	<!-- 用户统计 -->
+	<select id="countPersonal" resultType="int">
+		select count(*) from city_personal 
+		<if test="gender >= 0">
+			where gender = #{gender}
+		</if>
+	</select>
+	<!-- 查询所有可以播放广告的位置  -->
+	<select id="selPosterType" resultType="Citypostertype">
+		select * from city_postertype
+	</select>
+	<!-- 查看可以播放广告的位置是否已满  -->
+	<select id="selcountposterType" resultType="int">
+		select count(*) from city_poster where postertypeid = #{pid} and store = #{store}
+	</select>
+	
+	
+</mapper>

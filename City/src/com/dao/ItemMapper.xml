@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ItemMapper">
+<select id="getItem" resultType="ItemPojo">
+		select * from item,shops store where pid=#{pid} and isDelete=0 and store.id=item.shopId limit ${(index - 1) * 12},12
+</select>
+<select id="getItemCount" resultType="int">
+		select count(id) from item where pid=#{pid} and isDelete=0
+</select>
+<select id="getCategory" resultType="String">
+		select distinct category#{i} from item where pid=#{pid} and isDelete=0
+ </select>
+ <select id="getCategoryItems" parameterType="Map" resultType="ItemPojo">
+ 		select * from item,shops store where pid=#{pid} and isDelete=0 and store.id=item.shopId
+ 		${sql} 
+ 		${order} limit ${(index - 1) * 12},12
+ </select>
+ <select id="getCategoryItemsCount" parameterType="Map" resultType="int">
+ 		select count(item.id) from item,shops store where pid=#{pid} and isDelete=0 and store.id=item.shopId
+ 		${sql} 
+ 		
+ </select>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.shopsMapper">
+	
+	<!-- 商铺登录 -->
+	<select id="shopsLogin" resultType="int">
+		select count(*) from shops where account=#{root} and shoppwd=#{rootpwd}
+	</select>
+	
+	<select id="pojo" resultType="shopsPojo">
+		select * from shops where account = #{root}
+	</select>
+	<!-- 更改密码 -->
+	<update id="uplogin">
+		update shops set email = #{email} , shoppwd = #{pwd} 
+		where id = #{root} and shoppwd = #{rootpwd}
+	</update>
+</mapper> 

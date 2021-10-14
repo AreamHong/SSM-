@@ -1,0 +1,61 @@
+package com.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.dao.CollectMapper;
+import com.pojo.CollectHelp;
+import com.pojo.ShopDetailPojo;
+// ’≤ÿ
+@Controller
+@RequestMapping("/Collect")
+public class CollectController {
+	@Autowired
+	CollectMapper dao;
+	
+	
+	@RequestMapping("/getCollectCategory")
+	public Object getCollectCategory(Map map,int userid){
+		List<CollectHelp> categoryList= dao.getCollectCategory(userid);
+		List<ShopDetailPojo> collectShop = dao.getCollectShop(null,userid);
+		map.put("categoryList", categoryList);
+		map.put("collectShop", collectShop);
+		return "wod_shouc";
+	}
+	@RequestMapping("/refreshCg")
+	public Object refreshList(Map map,int userid){
+		List<CollectHelp> categoryList= dao.getCollectCategory(userid);
+		map.put("categoryList", categoryList);
+		return "CollectCg";
+	}
+	@RequestMapping("/refreshList")
+	public Object refreshList(String pid,Map map,int userid){
+		List<ShopDetailPojo> collectShop = dao.getCollectShop(pid,userid);
+		map.put("collectShop", collectShop);
+		return "CollectList";
+	}
+	
+	@RequestMapping("/cancelCollect")
+	public Object cancelCollect(String id,String pid,int userid){
+		dao.cancelCollect(id,userid);
+		return "redirect:/Collect/refreshList?pid="+pid+"&userid="+userid;
+	}
+	@RequestMapping("/del")
+	@ResponseBody
+	public Object del(String str,int userid,int pid){
+		List<Integer> list = new ArrayList<Integer>();
+		for (String i :	str.split(",")) {
+			if(i!=null&&i!=""){
+				list.add(new Integer(i));
+			}
+		}
+		return "redirect:/Collect/refreshList?pid="+pid+"&userid="+userid;
+	}
+	
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.userMapper">
+	<!-- 查询所有用户 -->
+	<select id="list" resultType="userPojo">
+		select * from City_personal
+	</select>
+	<!-- 模糊查询用户 -->
+	<select id="sel" resultType="userPojo">
+		SELECT * FROM `city_personal` where username like #{username} 
+		<if test="state == 1 || state == 0">
+			and state = #{state}
+		</if>
+		<if test="state == 2">
+			and state != #{state}
+		</if>
+		order by username asc limit #{index}, 12	
+	</select>
+	<!-- 总页数 -->
+	<select id="sum" resultType="int">
+		select count(id) from city_personal where username like #{username}
+		<if test="state == 1 || state == 0">
+			and state = #{state}
+		</if>
+		<if test="state == 2">
+			and state != #{state}
+		</if> 
+	</select>
+	<!-- 查询单个用户信息 更改用户状态页面 -->
+	<select id="seluser" resultType="userPojo">
+		select * from city_personal where id = #{id}
+	</select>
+	<!--更改用户状态,封禁用户或解封用户。 -->
+	<update id="upuser">
+		update city_personal set state = #{state} , prompt = #{prompt} where id = #{id}
+	</update>
+
+</mapper> 

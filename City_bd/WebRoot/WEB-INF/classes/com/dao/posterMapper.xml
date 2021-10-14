@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.posterMapper">
+
+	<!-- 广告列表：陈旭超  -->
+	<resultMap type="Cityposter" id="map">
+		<result column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="postername" property="postername"/>
+		<result column="postertypeid" property="postertypeid"/>
+		<result column="store" property="store"/>
+		<result column="postercode" property="postercode"/>
+		<association property="postertype" javaType="Citypostertype">
+			<result column="ttype" property="type"/>
+		</association>
+	</resultMap>
+	
+	<!-- 查询 -->
+	<select id="sellist" resultMap="map">
+		select p.*,t.type ttype from `city_poster` p
+		inner join `city_postertype` t on p.`postertypeid` = t.id
+		<where>
+			<if test="pid != 0">
+				and p.postertypeid = #{pid}
+			</if>
+			<if test="store != 0">
+				and p.store = #{store}
+			</if>
+		</where>
+		ORDER BY p.store ASC
+		limit #{index},#{size}
+	</select>
+	<select id="count" resultType="int">
+		select count(*) from city_poster
+		<where>
+			<if test="postertypeid != 0">
+				and postertypeid = #{pid}
+			</if>
+			<if test="store != 0">
+				and store = #{store}
+			</if>
+		</where>
+	</select>
+	<!-- 查询所有的可以播放广告的位置  -->
+	<select id="seltype" resultType="Citypostertype">
+		select * from city_postertype
+	</select>
+	<!-- 单个删除  -->
+	<delete id="delId">
+		delete from city_poster where id = #{id}
+	</delete>
+	
+	<!-- 多个删除  -->
+	<delete id="delAll">
+		delete from city_poster where id in 
+		<foreach collection="list" open="(" close=")" separator="," item="i">
+			${i}
+		</foreach>
+	</delete>
+	<!-- 根据id进行查询所有信息跳转修改页面使用  -->
+	<select id="selId" resultMap="map">
+		select p.*,t.type ttype from `city_poster` p
+		inner join `city_postertype` t on p.`postertypeid` = t.id
+		where p.id = #{id}
+	</select>
+	<!-- 修改  -->
+	<update id="upd">
+		update city_poster 
+		<set>
+			<if test="name!=null and name!=''">
+				`name` = #{name},
+			</if>
+			<if test="postername!=null and postername!=''">
+				`postername` = #{postername},
+			</if>
+			<if test="postertypeid!=0">
+				`postertypeid` = #{postertypeid},
+			</if>
+			<if test="store!=0">
+				`store` = #{store},
+			</if>
+			<if test="postercode!=null and postercode!=''">
+				`postercode` = #{postercode}
+			</if>
+		</set>
+		 where id = #{id}
+	</update>
+	<!-- 添加  -->
+	<insert id="add">
+		insert into city_poster (`name`,`postername`,`postertypeid`,`store`,`postercode`) 
+		values (#{name},#{postername},#{postertypeid},#{store},#{postercode})
+	</insert>
+	<!-- 查看广告播放队列  -->
+	<select id="selStore" resultType="int">
+		select count(*) from city_poster where store=1 AND postertypeid = #{postertypeid}
+	</select>
+	<!-- 批量修改广告播放状态  -->
+	<update id="updStore">
+		update city_poster set `store` = #{store} where id in 
+		<foreach collection="list" open="(" close=")" separator="," item="i">
+			${i}
+		</foreach>
+	</update>
+</mapper>

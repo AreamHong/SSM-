@@ -1,0 +1,15 @@
+package com.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.pojo.CollectHelp;
+import com.pojo.ShopDetailPojo;
+
+public interface CollectMapper {
+	public List<CollectHelp> getCollectCategory(@Param("userid")int b);
+	public List<ShopDetailPojo> getCollectShop(@Param("pid")String id,@Param("userid")int b);
+	public int cancelCollect(@Param("id")String i,@Param("userid")int b);
+	public int del(@Param("list")List<Integer> a,@Param("userid")int b);
+}

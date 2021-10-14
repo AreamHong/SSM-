@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.productMapper">
+	<!-- 查询一级分类 -->
+	<select id="t1" resultType="com.pojo.productPojo">
+		select * from goods1 
+	</select>
+	<!-- 查询二级分类 -->
+	<select id="t2" resultType="com.pojo.productPojo">
+		select * from goods2 where pid = #{val}
+	</select>
+	<!-- 查询三级分类 -->
+	<select id="t3" resultType="com.pojo.productPojo">
+		select * from goods3 where pid = #{val}
+	</select>
+	<!-- 添加商品 -->
+	<insert id="proin">
+		insert into item(name,pid,shopid,detail,price,picture)values(#{name},#{pid},#{shopid},#{detail},#{price},#{picture})
+	</insert>
+	<!-- 查找属性 -->
+	<select id="sel" resultType="shop_details">
+		select id as pid ,attribute1,attribute2 from shoptype where pid = #{pid}
+	</select>
+	<insert id="add">
+		insert into shop_details(shopname,shopid,pid,attribute1,attribute2,merchants,inventory,money,images)
+		values(#{shopname},#{shopid},#{pid},#{attribute1},#{attribute2},#{merchants},#{inventory},#{money},#{images})
+	</insert>
+</mapper> 

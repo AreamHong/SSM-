@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CityShoppingMapper">
+	<!-- 陈旭超:购物车  -->
+	<!-- resultmap作用域  -->
+	<resultMap type="CityShopping" id="map">
+		<result column="id" property="id"/>
+		<result column="userid" property="userid"/>
+		<result column="storeid" property="storeid"/>
+		<result column="shopsid" property="shopsid"/>
+		<result column="commodityid" property="commodityid"/>
+		<result column="quantity" property="quantity"/>
+		<result column="totalprice" property="totalprice"/>
+		<result column="type" property="type"/>
+		<association property="shops" javaType="shopsPojo">
+			<result column="sid" property="id"/>
+			<result column="sname" property="shopname"/>
+		</association>
+		<association property="sdetaols" javaType="shop_details">
+			<result column="detail" property="shopname"/>
+			<result column="iprice" property="money"/>
+		</association>
+	</resultMap>
+	<!-- 根据用户id查询购物车信息  -->
+	<select id="selList" resultMap="map">
+		SELECT c.*,s.`id` sid,s.`shopname` sname,i.`shopname` detail,i.`money` iprice
+		FROM `city_shopping` c 
+		INNER JOIN `city_personal` u ON c.`userid` = u.`id`
+		INNER JOIN `shops` s ON s.`id` = c.`shopsid`
+		INNER JOIN `shop_details` i ON i.`id` = c.`detailsid`
+		WHERE userid = #{userid}
+	</select>
+	<!-- 用户购物车一共多少商品  -->
+	<select id="count" resultType="int">
+		select count(userid) from city_shopping where userid = #{userid}
+	</select>
+	
+	<!-- 多个删除和单个删除    -->
+	<delete id="delall">
+		delete from city_shopping where id in 
+		<foreach collection="list" open="(" close=")" separator="," item="i">
+			${i}
+		</foreach>
+	</delete>
+	<delete id="del">
+		delete from city_shopping where id = #{id}	
+	</delete>
+	
+	<!-- 修改购物车信息   -->
+	<update id="upd">
+		UPDATE `city_shopping` SET quantity = #{quantity},totalprice = #{totalprice} 
+		WHERE id = #{id}
+	</update>
+	
+	<select id="indexcount" resultType="int">
+		select count(*) from city_shopping where userid = #{id}
+	</select>
+	
+	<update id="updType">
+		UPDATE city_shopping SET `type`= #{type} 
+		<where>
+			<if test="list!=null">
+				id in 
+				<foreach collection="list" open="(" close=")" separator="," item="i">
+					${i}
+				</foreach>
+			</if>
+			<if test="userid!=0">
+				`userid` = #{userid}
+			</if>
+		</where>
+	</update>
+	
+</mapper>

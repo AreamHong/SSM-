@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CityLoginMapper">
+	
+	<!-- 查询用户名和手机号是否已注册 -->
+	<select id="selRegistered" resultType="int">
+		select count(*) from city_personal 
+		<where>
+			<if test="username!=null">
+				or username = #{username} 
+			</if>
+			<if test="phone!=null">
+				or phone = #{phone}
+			</if>
+		</where>
+	</select>
+	<!-- 用户注册添加 -->
+	<insert id="add">
+		insert into city_personal(`username`,`nickname`,`age`,`password`,`phone`,`jointime`,`logintime`)
+		values (#{username},#{nickname},#{age},#{password},#{phone},#{jointime},#{logintime})
+	</insert>
+	<!-- 登录  -->
+	<select id="login" resultType="personalPojo">
+		select * from city_personal 
+		<if test="t=='phone'">
+				where password = #{pwd} and phone=#{p}
+			</if>
+			<if test="t=='name'">
+				where username = #{name} and password = #{pwd}
+			</if>
+	</select>
+	<!-- 登录修改登录时间  -->
+	<update id="updlogintime">
+		UPDATE `city_personal` SET `logintime` = #{logintime} where id = #{id}
+	</update>
+	
+</mapper>

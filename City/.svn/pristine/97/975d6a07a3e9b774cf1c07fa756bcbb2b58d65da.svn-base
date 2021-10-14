@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.posterMapper">
+
+	<!-- 广告列表：陈旭超  -->
+	<resultMap type="Cityposter" id="map">
+		<result column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="postername" property="postername"/>
+		<result column="postertypeid" property="postertypeid"/>
+		<result column="store" property="store"/>
+		<association property="postertype" javaType="Citypostertype">
+			<result column="ttype" property="type"/>
+		</association>
+	</resultMap>
+	
+	<!-- 查询 -->
+	<select id="sellist" resultMap="map">
+		select p.*,t.type ttype from `city_poster` p
+		inner join `city_postertype` t on p.`postertypeid` = t.id
+		<where>
+			<if test="postertypeid != 0">
+				p.postertypeid = #{postertypeid} and p.store = 1
+			</if>
+		</where>
+	</select>
+	
+	<select id="seltype" resultType="Citypostertype">
+		select * from city_postertype
+	</select>
+	
+</mapper>

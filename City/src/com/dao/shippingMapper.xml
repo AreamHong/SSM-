@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.shippingMapper">
+
+<insert id="in">
+	insert into city_shipping(contact,province,city,area,address,phone,pid) values(#{contact},#{province},#{city},#{area},#{address},#{phone},#{id})
+</insert>
+
+<select id="list" resultType="com.pojo.shippingPojo">
+	SELECT b.id,b.addressdef,a.nickname,a.portrait,b.contact,b.address,b.phone,c.name as province ,d.name as area ,e.name as city from 
+	city_personal as a , city_shipping as b ,city_region as c,city_region as d ,city_region as e
+	where a.id = #{id} and b.pid = a.id and c.id = b.province and d.id = b.area and e.id = b.city
+</select>
+<!-- 收货地址的头像跟昵称 -->
+<select id="listper" resultType="com.pojo.personalPojo">
+	select id,nickname , portrait from city_personal where id = #{id}
+</select>
+<!-- 修改收货地址 -->
+<update id="up">
+	update city_shipping set contact = #{contact},province = #{province},city=#{city},area=#{area},address=#{address},phone=#{phone} where id = #{id}
+</update>
+<delete id="dele">
+	delete from city_shipping where id = #{id}
+</delete>
+<update id="updef">
+	update city_shipping set addressdef = "0" where pid = #{pid} and addressdef = "1"
+</update>
+<update id="updefone">
+	update city_shipping set addressdef = "1" where id = #{id}
+</update>
+</mapper>

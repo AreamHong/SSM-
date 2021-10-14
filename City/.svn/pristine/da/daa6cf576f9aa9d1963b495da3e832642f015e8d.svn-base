@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CollectMapper">
+<select id="getCollectCategory" resultType="CollectHelp">
+	select name,item.count,id  from goods3,
+(
+select pid,count from item 
+,
+(select shopid,count(shopid) count from shop_details where id in (select collectid from city_collect where userid = #{userid} ) group by shopid) shop
+where shop.shopid = item.id
+)item
+where goods3.id = item.pid
+</select>
+<select id="getCollectShop" resultType="ShopDetailPojo">
+select * from shop_details where id in(
+select id from 
+(select id from shop_details where shopid in 
+(select id from item 
+<if test="pid!=null and pid!=''">
+where pid=#{pid}
+</if>
+)
+) shop,
+
+(select collectid from city_collect where userid = #{userid}) collect 
+
+where shop.id = collect.collectid
+)
+</select>
+
+<delete id="cancelCollect">
+	delete from city_collect where collectid=#{id} and userid = #{userid}
+</delete>
+
+<delete id="del">
+	delete from city_collect where collectid in 
+	<foreach item="i" separator="," close=")" open="(" collection="list">${i} </foreach>
+	and userid = #{userid}
+</delete>
+</mapper> 

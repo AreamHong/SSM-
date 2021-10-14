@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.GoodsMapper">
+<select id="getGoods1" resultType="Goods1Pojo">
+		select * from goods1 where isDelete=0
+</select>
+<select id="getGoods2" resultType="Goods2Pojo">
+		select * from goods2 where pid=#{pid} and isDelete=0
+</select>
+<select id="getGoods3" resultType="Goods3Pojo">
+		select * from goods3 where pid=#{pid} and isDelete=0
+</select>
+<select id="getSomeGoods3" resultType="Goods3Pojo">
+		select * from goods3 where id=#{id} and isDelete=0
+</select>
+</mapper> 

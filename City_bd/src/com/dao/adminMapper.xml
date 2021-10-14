@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.adminMapper">
+	<!-- 判断用户名是否存在 -->
+	<select id="user" resultType="int">
+		select count(root) from admin where root = #{root}
+	</select>
+	<!-- 添加管理员用户 -->
+	<insert id="add">
+		insert into admin(root,rootpwd,email,jointime,logintime)
+		values(#{root},#{rootpwd},#{email},#{jointime},#{logintime})
+	</insert>	
+	<!-- 查询所有管理员用户 -->
+	<select id="list" resultType="com.pojo.adminPojo">
+		select * from admin
+	</select>
+	<!-- 删除管理员 -->
+	<delete id="del">
+		delete from admin where id = #{id}
+	</delete>
+	<!--登录 -->
+	<select id="login" resultType="int">
+		select count(*) from admin where root = #{root} and rootpwd = #{rootpwd}
+	</select>
+	<update id="uptime">
+		update admin set logintime = #{logintime} where root = #{root}
+	</update>
+	<update id="upadmin">
+		update admin set email = #{email} , rootpwd = #{pwd} 
+		where root = #{root} and rootpwd = #{rootpwd}
+	</update>
+</mapper> 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CityRegionMapper">
+	
+	<!--  -->
+	<select id="sel" resultType="com.pojo.CityRegion">
+		select * from city_region where pid = #{pid}
+	</select>
+	
+	<select id="selList" resultType="com.pojo.CityRegion">
+	
+	</select>
+	
+</mapper>

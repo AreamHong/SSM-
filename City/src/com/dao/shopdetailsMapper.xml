@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.shopdetailsMapper">
+	<!-- 查询商品类型属性 -->
+	<select id="shoptype" resultType="com.pojo.shop_details">
+		select b.shopid,b.id,b.images,b.shopname,a.attribute1,a.attribute2,a.merchants,a.inventory from shoptype as a,shop_details as b 
+		where b.shopid = #{id} and b.pid = a.id limit 1
+	</select>
+	<!-- 循环查出属性1的值 -->
+	<select id = "list" resultType="com.pojo.shop_details">
+		select attribute1 from shop_details where shopid = #{id} and attribute1 != "" group by attribute1
+	</select>
+	<!-- 循环查出属性2的值 -->
+	<select id = "list2" resultType="com.pojo.shop_details">
+		select attribute2 from shop_details where shopid = #{id} and attribute2 != "" group by attribute2
+	</select>
+	<!-- 循环查出商品展示图片 -->
+	<select id="img" resultType="com.pojo.shop_details">
+		select images from shop_details where shopid = #{id} and images != ""
+	</select>
+	<!-- 根据选中属性的值查出钱跟存货 -->
+	<select id="show" resultType="com.pojo.shop_details">
+		select merchants,id,money,inventory from shop_details where attribute1 = #{images} and attribute2 = #{attribute2} and shopid = #{id}
+	</select>
+	<insert id="gouwu">
+		insert into city_shopping(shopsid,detailsid,quantity,totalprice)values(#{storeid},#{detailsid},#{quantity},#{totalprice})
+	</insert>
+</mapper>

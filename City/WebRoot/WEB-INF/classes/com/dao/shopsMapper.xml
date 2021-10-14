@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.shopsMapper">
+
+<insert id="in">
+	insert into shops(username,phone,email,shopname,account,shoppwd,jointime) values(#{username},#{phone},#{email},#{shopname},#{account},#{shoppwd},#{jointime})
+</insert>
+
+<select id="ifacc" resultType="int">
+	select count(id) from shops where account = #{account}
+</select>
+
+<select id="ifshopname" resultType="int">
+	select count(id) from shops where shopname = #{shopname}
+</select>
+</mapper>
